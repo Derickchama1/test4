@@ -1,0 +1,17 @@
+name: run linux commands
+
+on:
+  workflow_dispatch:   # Run manually
+  push:
+    branches:
+      - main           # Optional automatic trigger
+
+jobs:
+  terraform:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: hellos
+        run: |
+          echo "hello derick you got this"
