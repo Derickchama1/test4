@@ -1,4 +1,4 @@
-name: run linux commands
+name: Create S3 Bucket with Terraform
 
 on:
   workflow_dispatch:   # Run manually
@@ -11,7 +11,45 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: terraform
+
     steps:
-      - name: hellos
-        run: |
-          echo "hello derick you got this"
+      # Step 1: Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+
+      # Step 3: Configure AWS credentials (from GitHub Secrets)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Step 4: Terraform Init
+      - name: Terraform Init
+        run: terraform init
+
+      # Step 5: Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Step 6: Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan -var="bucket_name=my-unique-bucket-${{ github.run_id }}"
+
+      # Step 7: Terraform Apply (auto-approve for CI)
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var="bucket_name=my-unique-bucket-${{ github.run_id }}"
+
+        # Step 8: Terraform Apply (auto-approve for CI)
+      - name: Terraform destroy
+        run: terraform destroy -auto-approve -var="bucket_name=my-unique-bucket-${{ github.run_id }}"
