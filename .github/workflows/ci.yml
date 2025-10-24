@@ -44,12 +44,12 @@ jobs:
 
       # Step 6: Terraform Plan
       - name: Terraform Plan
-        run: terraform plan -var="bucket_name=my-unique-bucket-${{ github.run_id }}"
+        run: terraform plan 
 
       # Step 7: Terraform Apply (auto-approve for CI)
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var="bucket_name=my-unique-bucket-${{ github.run_id }}"
+        run: terraform apply -auto-approve 
 
         # Step 8: Terraform Apply (auto-approve for CI)
       - name: Terraform destroy
-        run: terraform destroy -auto-approve -var="bucket_name=my-unique-bucket-${{ github.run_id }}"
+        run: terraform destroy -auto-approve 
